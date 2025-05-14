@@ -1,5 +1,5 @@
 const { getAppConfigFromEnv, getConf } = require("./config");
-const { initialize, getPayees, updatePayees, getLastTransaction, finalize, getAccountBalance, importTransactions, getHoldBalance, holdBudgetForNextMonth} = require("./actual.js");
+const { initialize, getPayees, updatePayees, getLastTransaction, finalize, getAccountBalance, importTransactions, getHoldBalance, holdBudgetForNextMonth, getPayeeName, getPayeeId} = require("./actual.js");
 const ghostfolio = require("./ghostfolio.js");
 
 const appConfig = getAppConfigFromEnv();
@@ -40,6 +40,12 @@ function formatDate(date) {
 
 async function calculateMortgage() {
     const actual = await initialize(config);
+    if (appConfig.MORTGAGE_PAYEE_ID == "") {
+        appConfig.MORTGAGE_PAYEE_ID = await getPayeeId(actual, appConfig.MORTGAGE_PAYEE_NAME);
+    } else if (appConfig.MORTGAGE_PAYEE_NAME == "") {
+        appConfig.MORTGAGE_PAYEE_NAME = await getPayeeName(actual, appConfig.MORTGAGE_PAYEE_ID);
+    }
+
     lastPaymentTransaction = await getLastTransaction(actual, appConfig.MAIN_ACCOUNT_ID, appConfig.MORTGAGE_PAYEE_ID);
     lastPrincipalTransaction = await getLastTransaction(actual, appConfig.MORTGAGE_ACCOUNT_ID, appConfig.MORTGAGE_PAYEE_ID);
 

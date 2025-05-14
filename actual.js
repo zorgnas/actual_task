@@ -64,6 +64,46 @@ async function getPayees(actualInstance, regexExpressionToMatch) {
 /**
  * 
  * @param {typeof actual} actualInstance 
+ * @param {*} payeeId 
+*/
+async function getPayeeName(actualInstance, payeeId) {
+    // Check for null, undefined, or empty/whitespace string
+    if (!payeeId || typeof payeeId !== 'string' || payeeId.trim() === "") {
+        return "";
+    }
+    const payees = await actualInstance.getPayees();
+    const foundPayee = payees.find(payee => payee.id === payeeId);
+
+    if (foundPayee) {
+        return foundPayee.name;
+    } else {
+        return "";
+    }
+}
+
+/**
+ * 
+ * @param {typeof actual} actualInstance 
+ * @param {*} payeeName 
+*/
+async function getPayeeId(actualInstance, payeeName) {
+    // Check for null, undefined, or empty/whitespace string
+    if (!payeeName || typeof payeeName !== 'string' || payeeName.trim() === "") {
+        return "";
+    }
+    const payees = await actualInstance.getPayees();
+    const foundPayee = payees.find(payee => payee.name === payeeName);
+
+    if (foundPayee) {
+        return foundPayee.id;
+    } else {
+        return "";
+    }
+}
+
+/**
+ * 
+ * @param {typeof actual} actualInstance 
  */
 async function updatePayees(actualInstance, payeesToUpdate) {
     for (id of Object.keys(payeesToUpdate)) {
@@ -165,5 +205,7 @@ module.exports = {
     getLastTransaction,
     getHoldBalance,
     holdBudgetForNextMonth,
-    finalize
+    finalize,
+    getPayeeName,
+    getPayeeId
 }

@@ -65,9 +65,13 @@ function getAppConfigFromEnv() {
     })
 
     if (ENABLE_INTEREST_CALCULATION) {
+        // Check if at least one of MORTGAGE_PAYEE_ID or MORTGAGE_PAYEE_NAME is provided
+        if (!MORTGAGE_PAYEE_ID && !MORTGAGE_PAYEE_NAME) {
+            throw new Error(`Missing environment variables: When interest calculation is enabled, either MORTGAGE_PAYEE_ID or MORTGAGE_PAYEE_NAME must be provided.`);
+        }
+        // Validate the other required variables for interest calculation
         validateEnv({
-            MORTGAGE_PAYEE_ID,
-            MORTGAGE_PAYEE_NAME,
+            // MORTGAGE_PAYEE_ID and MORTGAGE_PAYEE_NAME are handled by the custom check above
             MORTGAGE_ACCOUNT_ID,
             MAIN_ACCOUNT_ID,
             INTEREST_RATE,
